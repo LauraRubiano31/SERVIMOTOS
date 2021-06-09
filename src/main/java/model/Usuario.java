@@ -2,11 +2,14 @@ package model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 public class Usuario {
     @Id
@@ -32,18 +35,23 @@ public class Usuario {
     private String estado;
     @Column(length = 20)
     private String contraseña;
-    @Column(name = "Rol_idRolFK", nullable = false)
-    private int RolFK;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idRol")
+    private Rol rol;
 
     @OneToMany(mappedBy = "usuarios")
-    private List<Motocicleta>motocicletas;
+    private List<Motocicleta> motocicletas;
 
-    public Usuario(){
+    @OneToMany(mappedBy = "idUsuario",cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    private List<SolicitudServicio> solicitudesServicio;
+
+    public Usuario() {
     }
 
     public Usuario(int idUsuario, String nombre, String tipoDocumento, String numeroDocumento, String direccion,
-            String email, String numeroCelular, String numeroTelefono, String barrio, String estado, String contraseña,
-            int rolFK) {
+            String email, String numeroCelular, String numeroTelefono, String barrio, String estado,
+            String contraseña) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.tipoDocumento = tipoDocumento;
@@ -55,7 +63,6 @@ public class Usuario {
         Barrio = barrio;
         this.estado = estado;
         this.contraseña = contraseña;
-        RolFK = rolFK;
     }
 
     public int getIdUsuario() {
@@ -146,13 +153,6 @@ public class Usuario {
         this.contraseña = contraseña;
     }
 
-    public int getRolFK() {
-        return RolFK;
-    }
-
-    public void setRolFK(int rolFK) {
-        RolFK = rolFK;
-    }
-
     
+
 }
